@@ -1,4 +1,4 @@
-# Custom Taxonomy CleanUp
+# Custom Taxonomy Cleanup
 
 version:         1.0  
 Tested up to WP: 4.3  
@@ -13,15 +13,17 @@ This plugin provides an easy way to detect and remove terms from taxonomies that
 
 It's recommended you make a database backup before deleting terms.
 
-## No terms found
+## Screenshots
+
+### No terms found
 The settings page if there are no terms from unused taxonomies in the database. De-activate or delete the plugin and use it again later.
 
 ![No unused taxonomy terms found](/../screenshots/screenshot-1.png?raw=true)
 
-## Settings Page.
+### Settings Page
 The settings page if terms where found (after deleting a batch of 100 terms).
 ![Settings page for this plugin](/../screenshots/screenshot-2.png?raw=true)
 
-## Done
+### Done
 The settings page if all terms were deleted. De-activate or delete the plugin and use it again later.
 ![Settings page for this plugin](/../screenshots/screenshot-3.png?raw=true)
