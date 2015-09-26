@@ -194,7 +194,7 @@ class Custom_Taxonomy_Cleanup {
 			$unregistered = _n( 'Terms from unused taxonomy detected!', 'Terms from unused taxonomies detected!', count( $this->tax_options ), 'custom-taxonomy-cleanup' );
 
 			echo '<h3 style="color:Chocolate;">' . $unregistered . '</h3>';
-			echo '<p>' . $header . '<br/>' . __( 'Terms are deleted in batches of 500 terms.', 'custom-taxonomy-cleanup' ) . '</p>';
+			echo '<p>' . $header . '<br/>' . __( 'Terms are deleted in batches of 100 terms.', 'custom-taxonomy-cleanup' ) . '</p>';
 			echo '<p>' . __( "It's recommended you <strong style='color:red;'>make a database backup</strong> before proceeding.", 'custom-taxonomy-cleanup' ) . '</p>';
 
 			echo '<form method="post" action="">';
@@ -255,7 +255,7 @@ class Custom_Taxonomy_Cleanup {
 		}
 
 		$query = "SELECT t.term_id FROM $wpdb->terms AS t INNER JOIN $wpdb->term_taxonomy AS tt ON t.term_id = tt.term_id WHERE tt.taxonomy IN (%s)";
-		$db_terms = $wpdb->get_col( $wpdb->prepare( $query . " LIMIT 50", $taxonomy ) );
+		$db_terms = $wpdb->get_col( $wpdb->prepare( $query . " LIMIT 100", $taxonomy ) );
 
 		if ( empty( $db_terms ) ) {
 			/* translators: %s: taxonomy name */

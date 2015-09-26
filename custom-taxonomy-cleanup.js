@@ -14,8 +14,6 @@
 			localStorage.removeItem( "ctc_run_delete_dialog" );
 		}
 
-
-
 		$( "input[name='custom_taxonomy_cleanup']" ).on( "click", function( e ) {
 
 			if ( ( 'localStorage' in window ) && ( window[ 'localStorage' ] !== null ) ) {
