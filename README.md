@@ -11,7 +11,9 @@ This plugin provides an easy way to detect and remove terms from taxonomies that
 
 **Note**: The proper WordPress delete function `wp_delete_term()` is used instead of running a direct MySQL query to delete the terms. 
 
-It's recommended you make a database backup before deleting terms.
+It's recommended you **make a database backup** before deleting terms.
+
+Check out this [sister plugin](https://github.com/keesiemeijer/custom-post-type-cleanup) to delete unused post type posts
 
 ## Screenshots
 
