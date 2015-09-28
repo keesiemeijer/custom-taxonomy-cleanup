@@ -23,12 +23,16 @@
 
 				if ( taxonomy.length && ( taxonomy !== storage ) ) {
 
-					// Remove confirm dialog after first delete terms dialog.
-					localStorage.setItem( "ctc_run_delete_dialog", taxonomy );
-
 					var confirm_msg = ctc_plugin.confirm.replace( /%s/g, taxonomy );
+					var reply = confirm( confirm_msg );
 
-					return confirm( confirm_msg );
+					if ( reply == true ) {
+						localStorage.setItem( "ctc_run_delete_dialog", taxonomy );
+						return confirm;
+					} else {
+						localStorage.removeItem( "ctc_run_delete_dialog" );
+						return false;
+					}
 				}
 			}
 
