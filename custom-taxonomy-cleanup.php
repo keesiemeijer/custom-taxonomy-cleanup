@@ -31,13 +31,13 @@ class Custom_Taxonomy_Cleanup {
 
 	private $taxonomies;
 	private $db_taxonomies;
-	private $tax_options;
+	private $unused_tax;
 
 	public function __construct() {
 
 		load_plugin_textdomain( 'custom-taxonomy-cleanup', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 
-		// Hook in *very* late to catch all registered custom taxonomies. ¯\_(ツ)_/¯
+		// Hook in *very* late to catch all registered custom taxonomies.
 		add_action( 'init', array( $this, 'init' ), 9999999 );
 	}
 
@@ -50,6 +50,10 @@ class Custom_Taxonomy_Cleanup {
 	 */
 	public function init() {
 
+		if ( !is_admin() ) {
+			return;
+		}
+
 		// Registered taxonomies in global $wp_taxonomies variable.
 		$this->taxonomies = array_keys( get_taxonomies() );
 
@@ -57,25 +61,24 @@ class Custom_Taxonomy_Cleanup {
 		$this->db_taxonomies = $this->db_taxonomies();
 
 		// Unregistered (unused) taxonomies.
-		$this->tax_options = array();
+		$this->unused_tax = array();
 
-		// Taxonomy from $_POST request (to delete terms from).
+		// Taxonomy from a $_POST request (to delete terms from).
 		$taxonomy = $this->get_requested_taxonomy();
 
 		if ( !empty( $this->db_taxonomies ) ) {
-			$this->tax_options = array_diff( $this->db_taxonomies, $this->taxonomies );
+			$this->unused_tax = array_diff( $this->db_taxonomies, $this->taxonomies );
 		}
 
-		if ( !empty( $this->tax_options ) && !empty( $taxonomy ) ) {
+		if ( !empty( $this->unused_tax ) && !empty( $taxonomy ) ) {
 
 			// Register the non-existent taxonomy.
 			// This way we can use wp_delete_term() to delete the terms.
 
-			// Set hierachical to false as there is no need to re-assign child terms.
 			register_taxonomy( $taxonomy, array( 'post' ),
 				array(
 					'public' => false,
-					'hierarchical' => false,
+					'hierarchical' => true,
 				)
 			);
 		}
@@ -128,15 +131,77 @@ class Custom_Taxonomy_Cleanup {
 
 
 	/**
-	 * Returns taxonomies in the database.
+	 * Displays the admin settings page for this plugin.
 	 *
 	 * @since 1.0
-	 * @return array Array with taxonomies in the database.
+	 * @return void
 	 */
-	private function db_taxonomies() {
-		global $wpdb;
-		$query = "SELECT DISTINCT taxonomy FROM $wpdb->term_taxonomy";
-		return $wpdb->get_col( $query );
+	public function admin_page() {
+
+		$header        = __( 'Delete terms from custom taxonomies that are currently not registered (no longer in use).', 'custom-taxonomy-cleanup' );
+		$taxonomy      = '';
+		$delete_notice = '';
+
+		if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
+			check_admin_referer( 'custom_taxonomy_cleanup_nonce' );
+
+			$taxonomy      = $this->get_requested_taxonomy();
+			$delete_notice = $this->delete_terms( stripslashes_deep( $_POST ) );
+		}
+
+		// Start admin page output
+		echo '<div class="wrap rpbt_cache">';
+		echo '<h1>' . __( 'Custom Taxonomy Cleanup', 'custom-taxonomy-cleanup' ) . '</h1>';
+
+		echo $delete_notice;
+
+		if ( !empty( $this->unused_tax ) ) {
+			// Unused taxonomy terms found.
+
+			$unregistered = _n( 'Terms from unused taxonomy detected!', 'Terms from unused taxonomies detected!', count( $this->unused_tax ), 'custom-taxonomy-cleanup' );
+
+			echo '<h3 style="color:Chocolate;">' . $unregistered . '</h3>';
+			echo '<p>' . $header . '<br/>' . __( 'Terms are deleted in batches of 100 terms.', 'custom-taxonomy-cleanup' ) . '</p>';
+			echo '<p>' . __( "It's recommended you <strong style='color:red;'>make a database backup</strong> before proceeding.", 'custom-taxonomy-cleanup' ) . '</p>';
+
+			echo '<form method="post" action="">';
+			wp_nonce_field( 'custom_taxonomy_cleanup_nonce' );
+
+			echo "<table class='form-table'>";
+			$label = '<label for="ctc_taxonomy">' . __( 'Custom Taxonomy', 'custom-taxonomy-cleanup' ) . '</label>';
+			echo "<tr><th scope='row'>{$label}</th>";
+			echo '<td><select id="ctc_taxonomy" name="ctc_taxonomy">';
+
+			foreach ( $this->unused_tax as $unused_taxonomy ) {
+				$selected = ( $unused_taxonomy === $taxonomy ) ? " selected='selected'" : '';
+				$value = esc_attr( $unused_taxonomy );
+				$count = $this->get_term_count( $unused_taxonomy );
+				$count = $count ? ' (' . $count . ')' :  '';
+				echo "<option value='{$value}'{$selected}>{$value}{$count}</option>";
+			}
+
+			echo '</select>';
+			echo '<p class="description">' . __( 'The taxonomy you want to delete terms from.', 'custom-taxonomy-cleanup' ) . '</p>';
+			echo '</td></tr></table>';
+			submit_button( __( 'Delete Terms!', 'custom-taxonomy-cleanup' ), 'primary', 'custom_taxonomy_cleanup' );
+			echo '</form>';
+
+		} else {
+			// No unused taxonomy terms found.
+
+			if ( empty( $delete_notice ) ) {
+				echo '<p>' . $header . '</p>';
+			}
+
+			$plugin_url    = admin_url( 'plugins.php#custom-taxonomy-cleanup' );
+			$notice    = __( 'No unused custom taxonomies found!', 'custom-taxonomy-cleanup' );
+			$notice    = $notice . ' ' . "<a href='{$plugin_url}'>" . __( 'De-activate this plugin', 'custom-taxonomy-cleanup' ) . '</a>';
+			$notice    = '<div class="updated"><p>' . $notice . '</p></div>';
+
+			echo $notice;
+		}
+
+		echo '</div>';
 	}
 
 
@@ -164,83 +229,10 @@ class Custom_Taxonomy_Cleanup {
 
 
 	/**
-	 * Displays the admin settings page for this plugin.
-	 *
-	 * @since 1.0
-	 * @return void
-	 */
-	public function admin_page() {
-
-		$header        = __( 'Delete terms from custom taxonomies that are currently not registered (no longer in use).', 'custom-taxonomy-cleanup' );
-		$taxonomy      = '';
-		$delete_notice = '';
-
-		if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
-			check_admin_referer( 'custom_taxonomy_cleanup_nonce' );
-
-			$taxonomy      = $this->get_requested_taxonomy();
-			$delete_notice = $this->delete_terms( stripslashes_deep( $_POST ) );
-		}
-
-		// Start admin page output
-		echo '<div class="wrap rpbt_cache">';
-		echo '<h1>' . __( 'Custom Taxonomy Cleanup', 'custom-taxonomy-cleanup' ) . '</h1>';
-
-		echo $delete_notice;
-
-		if ( !empty( $this->tax_options ) ) {
-			// Unused taxonomy terms found.
-
-			$unregistered = _n( 'Terms from unused taxonomy detected!', 'Terms from unused taxonomies detected!', count( $this->tax_options ), 'custom-taxonomy-cleanup' );
-
-			echo '<h3 style="color:Chocolate;">' . $unregistered . '</h3>';
-			echo '<p>' . $header . '<br/>' . __( 'Terms are deleted in batches of 100 terms.', 'custom-taxonomy-cleanup' ) . '</p>';
-			echo '<p>' . __( "It's recommended you <strong style='color:red;'>make a database backup</strong> before proceeding.", 'custom-taxonomy-cleanup' ) . '</p>';
-
-			echo '<form method="post" action="">';
-			wp_nonce_field( 'custom_taxonomy_cleanup_nonce' );
-
-			echo "<table class='form-table'>";
-			$label = '<label for="ctc_taxonomy">' . __( 'Custom Taxonomy', 'custom-taxonomy-cleanup' ) . '</label>';
-			echo "<tr><th scope='row'>{$label}</th>";
-			echo '<td><select id="ctc_taxonomy" name="ctc_taxonomy">';
-
-			foreach ( $this->tax_options as $tax_option ) {
-				$selected = ( $tax_option === $taxonomy ) ? " selected='selected'" : '';
-				$value = esc_attr( $tax_option );
-				echo "<option value='{$value}'{$selected}>{$value}</option>";
-			}
-
-			echo '</select>';
-			echo '<p class="description">' . __( 'The taxonomy you want to delete terms from.', 'custom-taxonomy-cleanup' ) . '</p>';
-			echo '</td></tr></table>';
-			submit_button( __( 'Delete Terms!', 'custom-taxonomy-cleanup' ), 'primary', 'custom_taxonomy_cleanup' );
-			echo '</form>';
-
-		} else {
-			// No unused taxonomy terms found.
-
-			if ( empty( $delete_notice ) ) {
-				echo '<p>' . $header . '</p>';
-			}
-
-			$plugin_url    = admin_url( 'plugins.php#custom-taxonomy-cleanup' );
-			$tax_notice    = __( 'No unused custom taxonomies found!', 'custom-taxonomy-cleanup' );
-			$tax_notice    = $tax_notice . ' ' . "<a href='{$plugin_url}'>" . __( 'De-activate this plugin', 'custom-taxonomy-cleanup' ) . '</a>';
-			$tax_notice    = '<div class="updated"><p>' . $tax_notice . '</p></div>';
-
-			echo $tax_notice;
-		}
-
-		echo '</div>';
-	}
-
-
-	/**
 	 * Delete terms from the database.
 	 *
 	 * @since 1.0
-	 * @param $args array $_POST request with taxonomy to delete terms from.
+	 * @param unknown $args array $_POST request with taxonomy to delete terms from.
 	 * @return string Admin notices.
 	 */
 	private function delete_terms( $args ) {
@@ -254,8 +246,7 @@ class Custom_Taxonomy_Cleanup {
 			return $msg;
 		}
 
-		$query = "SELECT t.term_id FROM $wpdb->terms AS t INNER JOIN $wpdb->term_taxonomy AS tt ON t.term_id = tt.term_id WHERE tt.taxonomy IN (%s)";
-		$db_terms = $wpdb->get_col( $wpdb->prepare( $query . " LIMIT 100", $taxonomy ) );
+		$db_terms = $this->get_term_ids( $taxonomy, 100 );
 
 		if ( empty( $db_terms ) ) {
 			/* translators: %s: taxonomy name */
@@ -277,16 +268,16 @@ class Custom_Taxonomy_Cleanup {
 		}
 
 		// Check if there more terms from this taxonomy to delete.
-		$db_terms = $wpdb->get_col( $wpdb->prepare( $query, $taxonomy ) );
+		$term_count = absint( $this->get_term_count( $taxonomy ) );
 
-		if ( !empty( $db_terms ) ) {
+		if ( $term_count ) {
 			/* translators: 1: term count, 2: taxonomy name  */
-			$msg .= '<div class="notice"><p>' . sprintf( __( 'Still %1$d terms left in the database from the taxonomy: %2$s ', 'custom-taxonomy-cleanup' ), count( $db_terms ), $taxonomy ) . '</p></div>';
+			$msg .= '<div class="notice"><p>' . sprintf( __( 'Still %1$d terms left in the database from the taxonomy: %2$s ', 'custom-taxonomy-cleanup' ), $term_count, $taxonomy ) . '</p></div>';
 		} else {
 			// No more terms from this taxonomy in the database.
 
-			if ( ( $key = array_search( $taxonomy, $this->tax_options ) ) !== false ) {
-				unset( $this->tax_options[ $key ] );
+			if ( ( $key = array_search( $taxonomy, $this->unused_tax ) ) !== false ) {
+				unset( $this->unused_tax[ $key ] );
 
 				/* translators: %s: taxonomy name */
 				$msg .= '<div class="updated"><p>' . sprintf( __( 'No more terms left in the database from the taxonomy: %s ', 'custom-taxonomy-cleanup' ), $taxonomy ) . '</p></div>';
@@ -295,6 +286,51 @@ class Custom_Taxonomy_Cleanup {
 
 		return $msg;
 	}
+
+	/**
+	 * Returns taxonomies in the database.
+	 *
+	 * @since 1.0
+	 * @return array Array with taxonomies in the database.
+	 */
+	private function db_taxonomies() {
+		global $wpdb;
+		$query = "SELECT DISTINCT taxonomy FROM $wpdb->term_taxonomy";
+		return $wpdb->get_col( $query );
+	}
+
+
+	/**
+	 * Returns the term count for a taxonomy.
+	 *
+	 * @since 1.0
+	 * @param string  $taxonomy Taxonomy.
+	 * @return integer Term count for a taxonomy.
+	 */
+	private function get_term_count( $taxonomy ) {
+		global $wpdb;
+		$query = "SELECT COUNT( t.term_id ) FROM $wpdb->terms AS t INNER JOIN $wpdb->term_taxonomy AS tt ON t.term_id = tt.term_id WHERE tt.taxonomy IN (%s)";
+		return $wpdb->get_var( $wpdb->prepare( $query, $taxonomy ) );
+	}
+
+
+	/**
+	 * Returns term ids from a taxonomy.
+	 *
+	 * @since 1.0
+	 * @param string  $post_type Taxonomy.
+	 * @param integer $limit     Limit how many ids are returned.
+	 * @return array Array with term ids.
+	 */
+	private function get_term_ids( $taxonomy, $limit = 0 ) {
+		global $wpdb;
+
+		$limit = $limit ? " LIMIT {$limit}" : '';
+		$query = "SELECT t.term_id FROM $wpdb->terms AS t INNER JOIN $wpdb->term_taxonomy AS tt ON t.term_id = tt.term_id WHERE tt.taxonomy IN (%s){$limit}";
+
+		return $wpdb->get_col( $wpdb->prepare( $query, $taxonomy ) );
+	}
+
 }
 
 $custom_taxonomy_cleanup = new Custom_Taxonomy_Cleanup();
