@@ -21,13 +21,14 @@ Check out this [sister plugin](https://github.com/keesiemeijer/custom-post-type-
 ### No terms found
 The settings page if there are no terms from unused taxonomies in the database. De-activate or delete the plugin and use it again later.
 
-![No unused taxonomy terms found](https://user-images.githubusercontent.com/1436618/28870690-7c2b0396-7781-11e7-9475-6e75bb0c945c.png)
+![No unused taxonomy terms found](https://user-images.githubusercontent.com/1436618/28871708-128ae668-7786-11e7-8383-cc64a47d07a2.png)
 
 ### Settings Page
 The settings page if terms where found (after deleting a batch of 100 terms).
 
-![Settings page for this plugin](https://user-images.githubusercontent.com/1436618/28870688-7c25d4b6-7781-11e7-8b12-e7adf7ebb1c7.png)
+![Settings page for this plugin](https://user-images.githubusercontent.com/1436618/28871710-1291c6cc-7786-11e7-8abe-aac32b9f40cc.png)
 
 ### Done
 The settings page if all terms were deleted. De-activate or delete the plugin and use it again later.
-![Settings page for this plugin](https://user-images.githubusercontent.com/1436618/28870689-7c28d5ee-7781-11e7-9cd5-68d6d36f1b9d.png)
+
+![Settings page for this plugin](https://user-images.githubusercontent.com/1436618/28871709-128db2b2-7786-11e7-971c-32bf4ef769ae.png)
