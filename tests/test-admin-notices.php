@@ -12,7 +12,7 @@ class CTC_Test_Admin_Notices extends CTC_Taxonomy_Cleanup_UnitTestCase {
 	function setUp() {
 		parent::setUp();
 		$this->set_batch_size( 5 );
-		_delete_all_data();
+		$this->_delete_all_data();
 	}
 
 	/**

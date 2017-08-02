@@ -28,7 +28,7 @@ class CTC_Taxonomy_Cleanup_UnitTestCase extends \WP_UnitTestCase {
 	function create_terms( $taxonomy = 'ctax', $number = 5, $delete = true ) {
 
 		if ( $delete ) {
-			_delete_all_data();
+			$this->_delete_all_data();
 		}
 
 		if ( ! taxonomy_exists( $taxonomy ) ) {
@@ -86,6 +86,33 @@ class CTC_Taxonomy_Cleanup_UnitTestCase extends \WP_UnitTestCase {
 		$_SERVER['REQUEST_METHOD'] = 'POST';
 		$_POST['custom_taxonomy_cleanup'] = true;
 		$_POST['ctc_taxonomy'] = $taxonomy;
+	}
+
+	function _delete_all_data() {
+		global $wpdb;
+
+		foreach ( array(
+				$wpdb->posts,
+				$wpdb->postmeta,
+				$wpdb->comments,
+				$wpdb->commentmeta,
+				$wpdb->term_relationships,
+				$wpdb->termmeta
+			) as $table ) {
+			$wpdb->query( "DELETE FROM {$table}" );
+		}
+
+		foreach ( array(
+				$wpdb->terms,
+				$wpdb->term_taxonomy
+			) as $table ) {
+			$wpdb->query( "DELETE FROM {$table} WHERE term_id != 1" );
+		}
+
+		$wpdb->query( "UPDATE {$wpdb->term_taxonomy} SET count = 0" );
+
+		$wpdb->query( "DELETE FROM {$wpdb->users} WHERE ID != 1" );
+		$wpdb->query( "DELETE FROM {$wpdb->usermeta} WHERE user_id != 1" );
 	}
 
 	/**
