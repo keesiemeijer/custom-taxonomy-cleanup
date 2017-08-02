@@ -31,7 +31,7 @@ class CTC_Test_Delete extends CTC_Taxonomy_Cleanup_UnitTestCase {
 	 * @depends test_admin_page_deleting_terms_in_batches
 	 */
 	function test_admin_page_deleting_terms_in_batches_from_correct_taxonomy() {
-		$this->create_not_registered_taxonomy_terms( 'cpt', 5 );
+		$this->create_not_registered_taxonomy_terms( 'ctax', 5 );
 		$this->mock_admin_page_globals();
 		$this->cleanup->register_taxonomy();
 		$admin_page = $this->get_admin_page();

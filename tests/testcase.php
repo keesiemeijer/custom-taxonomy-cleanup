@@ -69,7 +69,7 @@ class CTC_Taxonomy_Cleanup_UnitTestCase extends \WP_UnitTestCase {
 	/**
 	 * Registers a taxonomy.
 	 *
-	 * @param string $taxonomy Taxonomy name. Default 'cpt'.
+	 * @param string $taxonomy Taxonomy name. Default 'ctax'.
 	 */
 	function register_taxonomy( $taxonomy = 'ctax' ) {
 		$args = array( 'hierarchical' => true, 'label' => 'Custom Taxonomy' );

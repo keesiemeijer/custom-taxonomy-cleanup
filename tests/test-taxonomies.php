@@ -10,6 +10,7 @@ class CTC_Test_Taxonomies extends CTC_Taxonomy_Cleanup_UnitTestCase {
 	function setUp() {
 		parent::setUp();
 		$this->set_batch_size( 5 );
+		$this->_delete_all_data();
 	}
 
 	/**
@@ -50,8 +51,8 @@ class CTC_Test_Taxonomies extends CTC_Taxonomy_Cleanup_UnitTestCase {
 	 */
 	function test_unused_taxonomy_is_registered() {
 		$this->create_not_registered_taxonomy_terms();
-		$this->mock_admin_page_globals( 'cpt' );
+		$this->mock_admin_page_globals( 'ctax' );
 		$this->cleanup->register_taxonomy();
-		$this->assertTrue( taxonomy_exists( 'cpt' ) );
+		$this->assertTrue( taxonomy_exists( 'ctax' ) );
 	}
 }
