@@ -1,107 +1,119 @@
-# Copyright (C) 2015 keesiemijer
+# Copyright (C) 2017 keesiemijer
 # This file is distributed under the GPL v2+.
 msgid ""
 msgstr ""
-"Project-Id-Version: Custom Taxonomy Cleanup 1.0\n"
+"Project-Id-Version: Custom Taxonomy Cleanup 1.0.0\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/custom-taxonomy-cleanup\n"
-"POT-Creation-Date: 2015-09-26 12:20:54+00:00\n"
+"POT-Creation-Date: 2017-08-02 10:29:25+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2015-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2017-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"X-Generator: grunt-wp-i18n 0.5.3\n"
-"X-Poedit-KeywordsList: "
-"__;_e;_x:1,2c;_ex:1,2c;_n:1,2;_nx:1,2,4c;_n_noop:1,2;_nx_noop:1,2,3c;esc_"
-"attr__;esc_html__;esc_attr_e;esc_html_e;esc_attr_x:1,2c;esc_html_x:1,2c;\n"
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-Country: United States\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: "
+"__;_e;_x:1,2c;_ex:1,2c;_n:1,2;_nx:1,2,4c;_n_noop:1,2;_nx_noop:1,2,3c;esc_"
+"attr__;esc_html__;esc_attr_e;esc_html_e;esc_attr_x:1,2c;esc_html_x:1,2c;\n"
 "X-Poedit-Basepath: ../\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-Bookmarks: \n"
 "X-Textdomain-Support: yes\n"
+"X-Generator: grunt-wp-i18n1.0.0\n"
 
 #. Plugin Name of the plugin/theme
 msgid "Custom Taxonomy Cleanup"
 msgstr ""
 
-#: custom-taxonomy-cleanup.php:120
+#: includes/class-taxonomy-cleanup.php:56
 #. translators: %s: taxonomy name
 msgid "You are about to permanently delete terms from the taxonomy: %s."
 msgstr ""
 
-#: custom-taxonomy-cleanup.php:124
+#: includes/class-taxonomy-cleanup.php:57
 msgid "'Cancel' to stop, 'OK' to delete."
 msgstr ""
 
-#: custom-taxonomy-cleanup.php:174
-msgid ""
-"Delete terms from custom taxonomies that are currently not registered (no "
-"longer in use)."
-msgstr ""
-
-#: custom-taxonomy-cleanup.php:194
-msgid "Terms from unused taxonomy detected!"
-msgid_plural "Terms from unused taxonomies detected!"
+#: includes/class-taxonomy-cleanup.php:94
+msgid "custom taxonomy"
+msgid_plural "custom taxonomies"
 msgstr[0] ""
 msgstr[1] ""
 
-#: custom-taxonomy-cleanup.php:197
-msgid "Terms are deleted in batches of 100 terms."
-msgstr ""
-
-#: custom-taxonomy-cleanup.php:198
-msgid ""
-"It's recommended you <strong style='color:red;'>make a database "
-"backup</strong> before proceeding."
-msgstr ""
-
-#: custom-taxonomy-cleanup.php:204
-msgid "Custom Taxonomy"
-msgstr ""
-
-#: custom-taxonomy-cleanup.php:215
-msgid "The taxonomy you want to delete terms from."
-msgstr ""
-
-#: custom-taxonomy-cleanup.php:217
-msgid "Delete Terms!"
-msgstr ""
-
-#: custom-taxonomy-cleanup.php:228
-msgid "No unused custom taxonomies found!"
-msgstr ""
-
-#: custom-taxonomy-cleanup.php:229
-msgid "De-activate this plugin"
-msgstr ""
-
-#: custom-taxonomy-cleanup.php:253
+#: includes/class-taxonomy-cleanup.php:199
 msgid "Error: invalid taxonomy"
 msgstr ""
 
-#: custom-taxonomy-cleanup.php:262
+#: includes/class-taxonomy-cleanup.php:208
 #. translators: %s: taxonomy name
 msgid "Notice: No terms found for the taxonomy: %s"
 msgstr ""
 
-#: custom-taxonomy-cleanup.php:276
+#: includes/class-taxonomy-cleanup.php:223
 #. translators: 1: deleted term count, 2: taxonomy name
-msgid "Deleted %1$d terms from the taxonomy: %2$s "
-msgstr ""
+msgid "Deleted %1$d term from the taxonomy: %2$s"
+msgid_plural "Deleted %1$d terms from the taxonomy: %2$s"
+msgstr[0] ""
+msgstr[1] ""
 
-#: custom-taxonomy-cleanup.php:284
+#: includes/class-taxonomy-cleanup.php:241
 #. translators: 1: term count, 2: taxonomy name
-msgid "Still %1$d terms left in the database from the taxonomy: %2$s "
+msgid "Still %1$d term left in the database from the taxonomy: %2$s"
+msgid_plural "Still %1$d terms left in the database from the taxonomy: %2$s"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-taxonomy-cleanup.php:259
+#. translators: %s: taxonomy name
+msgid "No more terms left in the database from the taxonomy: %s"
 msgstr ""
 
-#: custom-taxonomy-cleanup.php:292
-#. translators: %s: taxonomy name
-msgid "No more terms left in the database from the taxonomy: %s "
+#: includes/templates/admin-form.php:7
+#. translators: 1: Total term count, 2: Custom taxonomy count, 3: 'custom
+#. taxonomy' or 'custom taxonomies' (single/plural)
+msgid "%1$d term from %2$d unused %3$s detected!"
+msgid_plural "%1$d terms from %2$d unused %3$s detected!"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/templates/admin-form.php:10
+msgid ""
+"Here you can delete terms from custom taxonomies that are currently not "
+"registered (no longer in use)."
+msgstr ""
+
+#: includes/templates/admin-form.php:13
+#. translators: %d: Batch size
+msgid "Terms are deleted in batches of %d terms."
+msgstr ""
+
+#: includes/templates/admin-form.php:16
+msgid ""
+"It's recommended you <strong style='font-weight:bold; color:red;'>make a "
+"database backup</strong> before proceeding."
+msgstr ""
+
+#: includes/templates/admin-form.php:33
+msgid "The Taxonomy you want to delete terms from."
+msgstr ""
+
+#: includes/templates/admin-form.php:44
+#: includes/templates/admin-no-terms-found.php:22
+#. translators: %s: plugin link
+msgid "This page is generated by the %s plugin."
+msgstr ""
+
+#: includes/templates/admin-no-terms-found.php:6
+msgid "There are no unused custom taxonomy terms found."
+msgstr ""
+
+#: includes/templates/admin-no-terms-found.php:13
+#. translators: %s: wp-admin plugin page url
+msgid "<a href=\"%s\">De-activate this plugin</a> or try again later."
 msgstr ""
 
 #. Description of the plugin/theme
@@ -110,4 +122,14 @@ msgstr ""
 
 #. Author of the plugin/theme
 msgid "keesiemijer"
+msgstr ""
+
+#: includes/class-taxonomy-cleanup.php:79
+msgctxt "Text of link to plugin"
+msgid "Custom Taxonomy Cleanup"
+msgstr ""
+
+#: includes/templates/admin-form.php:25
+msgctxt "Taxonomy form label text"
+msgid "Taxonomy"
 msgstr ""
