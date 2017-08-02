@@ -1,7 +1,8 @@
 # Custom Taxonomy Cleanup
 
-version:         1.0  
-Tested up to WP: 4.3  
+Version: 1.0.0  
+Requires at least: 4.0  
+Tested up to: 4.8  
 
 Custom taxonomy terms are left in the database if a taxonomy is no longer registered (in use). 
 
@@ -13,7 +14,7 @@ This plugin provides an easy way to detect and remove terms from taxonomies that
 
 It's recommended you **make a database backup** before deleting terms.
 
-Check out this [sister plugin](https://github.com/keesiemeijer/custom-post-type-cleanup) to delete unused post type posts
+Check out this [sister plugin](https://github.com/keesiemeijer/custom-post-type-cleanup) to delete unused custom post type posts.
 
 ## Screenshots
 
