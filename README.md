@@ -1,8 +1,8 @@
 # Custom Taxonomy Cleanup [![Build Status](https://travis-ci.org/keesiemeijer/custom-taxonomy-cleanup.svg?branch=master)](https://travis-ci.org/keesiemeijer/custom-taxonomy-cleanup) #
 
 Version: 1.0.0  
-Requires at least: 4.0  
-Tested up to: 4.8  
+Requires at least: 4.3  
+Tested up to: 5.3  
 
 Custom taxonomy terms are left in the database if a taxonomy is no longer registered (in use). 
 
