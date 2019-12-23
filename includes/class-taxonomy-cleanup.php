@@ -90,11 +90,12 @@ class CTC_Taxonomy_Cleanup {
 			$notice   = $this->delete_terms( stripslashes_deep( $_POST ) );
 		}
 
-		$type_count = count( $this->unused_tax );
+		$unused_tax = is_array( $this->unused_tax ) ? $this->unused_tax : array();
+		$type_count = count( $unused_tax );
 		$type_str   = _n( 'custom taxonomy', 'custom taxonomies', $type_count );
 
-		if ( ! empty( $this->unused_tax ) ) {
-			foreach ( $this->unused_tax as $unused_type ) {
+		if ( ! empty( $unused_tax ) ) {
+			foreach ( $unused_tax as $unused_type ) {
 				$selected = ( $unused_type === $taxonomy ) ? " selected='selected'" : '';
 				$value = esc_attr( $unused_type );
 				$count = $this->get_term_count( $unused_type );
